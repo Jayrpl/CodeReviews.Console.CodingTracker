@@ -22,7 +22,7 @@ namespace coding_tracker
                 var tableCMD = connection.CreateCommand();
 
                 tableCMD.CommandText = @"CREATE TABLE IF NOT EXISTS coding_time (
-                                           Id INTEGER KEY AUTOINCREMENT,
+                                           Id INTEGER PRIMARY KEY AUTOINCREMENT,
                                            StartTime DATE,
                                            EndTime DATE,
                                            CalculateDuration Duration LONG)";
@@ -61,8 +61,8 @@ namespace coding_tracker
 
                 string sql = "UPDATE coding_time SET StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @recordId";
                 
-                //Get user inputted date
-                string sDate = "";
+                //Get user inputted time
+                string sTime = UserInput.GetTimeInput("Please enter the time you started in 24-hour format.");
                 string eDate = "";
                 CodingSession session = new CodingSession();
                 long duration = session.CalculateDuration(sDate, eDate).Ticks;
@@ -81,7 +81,7 @@ namespace coding_tracker
             }
         }
 
-        public void ShowAllRecords()
+        public List<CodingSession> ShowAllRecords()
         {
             Console.Clear();
 
@@ -89,24 +89,14 @@ namespace coding_tracker
             {
                 connection.Open();
 
-                var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = "SELECT * from coding_time";
+                string command = "SELECT * from coding_time";
 
-                var tableData = connection.Query(tableCmd.CommandText);
+                List<CodingSession> tableData = connection.Query<CodingSession>(command).ToList();
 
                 connection.Close();
-
-                Console.WriteLine("----------------------------------------------\n");
-
-                foreach (var data in tableData)
-                {
-                    Console.WriteLine($"{data.id} - Start Time: {data.startTime} - End Time: {data.endTime} - Duration: {data.duration}");
-                }
-
-                Console.WriteLine("----------------------------------------------\n");
-                
-
+                return tableData;
             }
+
 
         }
 
@@ -115,8 +105,7 @@ namespace coding_tracker
             Console.Clear();
 
             // Get date input (start and end)
-            string sDate = "";
-            string eDate = "";
+            string Date;
 
             // Calculate duration
             CodingSession session = new CodingSession();

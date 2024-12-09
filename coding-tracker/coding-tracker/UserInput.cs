@@ -12,7 +12,7 @@ namespace coding_tracker
 
             string? input = Console.ReadLine();
 
-            if (input == "0") GetUserSelection();
+            if (input == "0") return null;
 
             while (!DateTime.TryParseExact(input, "dd/mm/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out _))
             {
@@ -37,54 +37,35 @@ namespace coding_tracker
             return input;
         }
 
-        internal static void GetUserSelection()
+        internal static int GetTimeInput(string message)
         {
-            Console.Clear();
-            Controller controller = new Controller(); 
+            Console.WriteLine(message);
 
-            bool exit = false;
+            string? input = Console.ReadLine();
 
-            while (!exit)
+            while (!IsValidTime(input))
             {
-                Console.WriteLine("\n\nMAIN MENU");
-                Console.WriteLine("\nWhat would you like to do?");
-                Console.WriteLine("\nType 0 to Close Application");
-                Console.WriteLine("\nType 1 to View All Records");
-                Console.WriteLine("\nType 2 to View Insert Record");
-                Console.WriteLine("\nType 3 to View Delete Record");
-                Console.WriteLine("\nType 4 to View Update Record");
-
-                int chosenOption;
-
-                while (!int.TryParse(Console.ReadLine(), out chosenOption))
-                {
-                    Console.WriteLine("Please type a number between 0 and 3");
-                }
-
-                switch (chosenOption)
-                {
-                    case 0:
-                        Console.WriteLine("See ya!");
-                        exit = true;
-                        Environment.Exit(0);
-                        break;
-                    case 1:
-                        controller.ShowAllRecords();
-                        break;
-                    case 2:
-                        controller.Insert();
-                        break;
-                    case 3:
-                        controller.Delete();
-                        break;
-                    case 4:
-                        controller.Update();
-                        break;
-                    default:
-                        Console.WriteLine("\nInvalid command. Please type a number from 0 to 4.\n");
-                        break;
-                }
+                Console.WriteLine("Is invalid time input. Please enter a 4-digit time in 24-hour format (eg 1200, 0630, 1830");
+                input = Console.ReadLine();
             }
+
+            return int.Parse(input);
+
+
+        }
+
+        private static bool IsValidTime(string? input)
+        {
+            // Validate the input
+            if (string.IsNullOrEmpty(input) || input.Length != 4 || !int.TryParse(input, out _))
+                return false;
+
+            // Extract hour and minute
+            int hour = int.Parse(input.Substring(0, 2));
+            int minute = int.Parse(input.Substring(2, 2));
+
+            // Validate hour (0-23) and minute (0-59)
+            return hour >= 0 && hour < 24 && minute >= 0 && minute < 60;
         }
     }
 }

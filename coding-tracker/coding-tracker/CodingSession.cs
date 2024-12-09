@@ -16,7 +16,7 @@ namespace coding_tracker
             DateTime sTime = DateTime.ParseExact(s, "dd/mm/yyyy", CultureInfo.CurrentCulture);
             DateTime eTime = DateTime.ParseExact(e, "dd/mm/yyyy", CultureInfo.CurrentCulture);
 
-            return (sTime - eTime);
+            return (eTime - sTime);
         }
     }
 }
