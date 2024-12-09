@@ -1,15 +1,46 @@
 ﻿using System;
+using System.Globalization;
 
 namespace coding_tracker
 {
     // Class responsible for receiving user input and validating it
-    class UserInput
+    static class UserInput
     {
-        internal static string? GetStringInput();
+        internal static string GetDateInput()
+        {
+            Console.WriteLine("Please insert the date in dd/mm/yyyy form.");
 
-        static void GetUserSelection()
+            string? input = Console.ReadLine();
+
+            if (input == "0") GetUserSelection();
+
+            while (!DateTime.TryParseExact(input, "dd/mm/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out _))
+            {
+                Console.WriteLine("\n\nInvalid Date. Please insert the date in dd/mm/yyyy form.\n\n");
+                input = Console.ReadLine();
+            }
+
+            return input;
+        }
+
+        internal static int GetNumberInput(string message)
+        {
+            Console.WriteLine(message);
+
+            int input;
+
+            while (!int.TryParse(Console.ReadLine(), out input))
+            {
+                Console.WriteLine(message);
+            }
+
+            return input;
+        }
+
+        internal static void GetUserSelection()
         {
             Console.Clear();
+            Controller controller = new Controller(); 
 
             bool exit = false;
 
@@ -38,16 +69,16 @@ namespace coding_tracker
                         Environment.Exit(0);
                         break;
                     case 1:
-                        GetAllRecords();
+                        controller.ShowAllRecords();
                         break;
                     case 2:
-                        Insert();
+                        controller.Insert();
                         break;
                     case 3:
-                        Delete();
+                        controller.Delete();
                         break;
                     case 4:
-                        Update();
+                        controller.Update();
                         break;
                     default:
                         Console.WriteLine("\nInvalid command. Please type a number from 0 to 4.\n");
