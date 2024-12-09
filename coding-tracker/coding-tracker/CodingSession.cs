@@ -3,13 +3,16 @@
 
 namespace coding_tracker
 {
-    record CodingSession(DateTime startTime, DateTime endTime)
+    record CodingSession()
     {
-        private int id { get; set; }
-        private float duration { get; set; }
+        public int id { get; set; }
+        public float duration { get; set; }
+        public DateTime startTime { get; set; }
+        public DateTime endTime { get; set; }
 
         internal TimeSpan CalculateDuration()
         {
             return (startTime - endTime);
         }
     }
+}
