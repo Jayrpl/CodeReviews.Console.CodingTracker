@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Globalization;
 
 
 namespace coding_tracker
 {
     record CodingSession()
     {
-        public int id { get; set; }
-        public float duration { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
+        public int Id { get; set; }
+        public long Duration { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
 
-        internal TimeSpan CalculateDuration()
+        internal TimeSpan CalculateDuration(string s, string e)
         {
-            return (startTime - endTime);
+            DateTime sTime = DateTime.ParseExact(s, "dd/mm/yyyy", CultureInfo.CurrentCulture);
+            DateTime eTime = DateTime.ParseExact(e, "dd/mm/yyyy", CultureInfo.CurrentCulture);
+
+            return (sTime - eTime);
         }
     }
 }
