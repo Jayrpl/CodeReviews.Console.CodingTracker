@@ -17,7 +17,9 @@ namespace coding_tracker
 
             bool exit = false;
 
-            var choice = AnsiConsole.Prompt(
+            while (!exit)
+            {
+                var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                 .Title("[yellow]What would you like to do?[/]")
                 .PageSize(10)
@@ -26,9 +28,6 @@ namespace coding_tracker
                 {
                     "View All Records", "Insert", "Delete", "Update", "Exit",
                 }));
-
-            while (!exit)
-            {
                 switch (choice)
                 {
                     case "Exit":
@@ -107,11 +106,15 @@ namespace coding_tracker
                 var id = data.Id;
                 string sTime = data.StartTime;
                 string eTime = data.EndTime;
+                string date = data.Date;
 
                 var span = TimeSpan.FromTicks(data.Duration);
                 var mins = span.Minutes;
                 var hours = span.Hours;
-                Console.WriteLine($"{id} - Start Time: {sTime} - End Time: {eTime} - Duration: {hours} hours {mins} mins");
+                Console.WriteLine("--------------------------------------------------------------------------------------------------------");
+                Console.WriteLine($"Id:{id} - Date: {date} - Start Time: {sTime} - End Time: {eTime} - Duration: {hours} hours {mins} mins");
+                Console.WriteLine("--------------------------------------------------------------------------------------------------------\n");
+
             }
         }
 

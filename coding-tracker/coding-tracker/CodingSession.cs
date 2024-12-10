@@ -10,13 +10,14 @@ namespace coding_tracker
         public long Duration { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public string Date {  get; set; }
 
         internal TimeSpan CalculateDuration(string s, string e)
         {
-            DateTime sTime = DateTime.ParseExact(s, "dd/mm/yyyy", CultureInfo.CurrentCulture);
-            DateTime eTime = DateTime.ParseExact(e, "dd/mm/yyyy", CultureInfo.CurrentCulture);
+            DateTime startDateTime = DateTime.ParseExact(s, "dd/MM/yyyy HHmm", CultureInfo.CurrentCulture);
+            DateTime endDateTime = DateTime.ParseExact(e, "dd/MM/yyyy HHmm", CultureInfo.CurrentCulture);
 
-            return (eTime - sTime);
+            return (endDateTime - startDateTime);
         }
     }
 }

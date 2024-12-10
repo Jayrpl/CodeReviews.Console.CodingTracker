@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Dapper;
+using System.Reflection.Metadata;
 
 namespace coding_tracker
 {
@@ -23,9 +25,10 @@ namespace coding_tracker
 
                 tableCMD.CommandText = @"CREATE TABLE IF NOT EXISTS coding_time (
                                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                           StartTime DATE,
-                                           EndTime DATE,
-                                           CalculateDuration Duration LONG)";
+                                           Date TEXT,
+                                           StartTime TEXT,
+                                           EndTime TEXT,
+                                           Duration INTEGER)";
 
                 tableCMD.ExecuteNonQuery();
             }
@@ -37,10 +40,10 @@ namespace coding_tracker
             ShowAllRecords();
 
             // take user input (number)
-            var recordId = 0;
+            var recordId = UserInput.GetNumberInput("Please input the record id number that you would like to delete.");
             using (var connection = new SqliteConnection(connectionString))
             {
-                string sql = $"DELETE * FROM coding_time WHERE Id =  '{recordId}'";
+                string sql = "DELETE FROM coding_time WHERE Id = @RecordId";
 
                 int rowsAffected = connection.Execute(sql, new { RecordId = recordId });
 
@@ -53,25 +56,31 @@ namespace coding_tracker
             ShowAllRecords();
 
             //Get user input
-            var recordId = 0;
+            var recordId = UserInput.GetNumberInput("Please input the record id number that you would like to update.");
 
             using (var connection = new SqliteConnection( connectionString))
             {
                 connection.Open();
 
-                string sql = "UPDATE coding_time SET StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @recordId";
-                
-                //Get user inputted time
-                string sTime = UserInput.GetTimeInput("Please enter the time you started in 24-hour format.");
-                string eDate = "";
+                // Get date input
+                string date = UserInput.GetDateInput();
+                string startTime = UserInput.GetTimeInput("Please enter the time you started in 24-hour format.");
+                string endTime = UserInput.GetTimeInput("Please enter the time you started in 24-hour format.");
+                string sTime = date + " " + startTime;
+                string eTime = date + " " + endTime;
+
+                // Calculate duration
                 CodingSession session = new CodingSession();
-                long duration = session.CalculateDuration(sDate, eDate).Ticks;
+                var duration = session.CalculateDuration(sTime, eTime).Ticks;
+
+                string sql = "UPDATE coding_time SET Date = @Date, StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @RecordId";
 
                 var parameters = new
                 {
                     RecordId = recordId,
-                    StartDate = sDate,
-                    EndDate = eDate,
+                    Date = date,
+                    StartTime = startTime,
+                    EndTime = endTime,
                     Duration = duration
                 };
 
@@ -104,30 +113,37 @@ namespace coding_tracker
         {
             Console.Clear();
 
-            // Get date input (start and end)
-            string Date;
+            // Get date input
+            string date = UserInput.GetDateInput();
+            string startTime = UserInput.GetTimeInput("Please enter the time you started in 24-hour format.");
+            string endTime = UserInput.GetTimeInput("Please enter the time you finished in 24-hour format.");
+            string sTime = date + " " + startTime;
+            string eTime = date + " " + endTime;         
 
             // Calculate duration
             CodingSession session = new CodingSession();
-            var duration = session.CalculateDuration(sDate, eDate).Ticks;
+            long duration = session.CalculateDuration(sTime, eTime).Ticks;
 
             // Use duration to insert
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO coding_time(startDate, endDate, duration VALUES('{sDate}', '{eDate}', '{duration})' ";
+                string sql = "INSERT INTO coding_time(Date, StartTime, EndTime, Duration) VALUES(@Date, @StartTime, @EndTime, @Duration) ";
 
                 var parameters = new
                 {
-                    StartDate = sDate,
-                    EndDate = eDate,
+                    Date = date,
+                    StartTime = startTime,
+                    EndTime = endTime,
                     Duration = duration
                 };
 
                 int rows_inserted = connection.Execute(sql, parameters);
 
                 Console.WriteLine(rows_inserted);
+
+                connection.Close();
             }
         }
     }

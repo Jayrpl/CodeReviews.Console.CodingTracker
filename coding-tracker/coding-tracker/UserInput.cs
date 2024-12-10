@@ -37,7 +37,7 @@ namespace coding_tracker
             return input;
         }
 
-        internal static int GetTimeInput(string message)
+        internal static string GetTimeInput(string message)
         {
             Console.WriteLine(message);
 
@@ -49,7 +49,7 @@ namespace coding_tracker
                 input = Console.ReadLine();
             }
 
-            return int.Parse(input);
+            return input;
 
 
         }
