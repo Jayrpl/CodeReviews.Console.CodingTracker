@@ -1,8 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.Collections.Specialized;
-
-namespace coding_tracker
+﻿namespace coding_tracker
 {
     class Program
     {
