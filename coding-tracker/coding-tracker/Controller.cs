@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 using Microsoft.Data.Sqlite;
 using Dapper;
-using System.Reflection.Metadata;
 
 namespace coding_tracker
 {
